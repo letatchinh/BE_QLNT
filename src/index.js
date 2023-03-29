@@ -14,7 +14,7 @@ const port = process.env.PORT;
 const connectDB = async () => {
     try {
       await mongoose.connect(
-        process.env.MONGODB_URI,
+        'mongodb+srv://letatchinh123:chinhancut1@cluster0.jb2stef.mongodb.net/?retryWrites=true&w=majority',
         { useNewUrlParser: true, useUnifiedTopology: true }
       )
       console.log('Connected to mongoDB')
