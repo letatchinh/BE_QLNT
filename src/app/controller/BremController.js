@@ -13,8 +13,34 @@ class BremController {
       });
       return res.json({ createBrem });
     } catch (error) {
-      return next(new ErrorHander(e, 400));
+      return next(new ErrorHander(error, 400));
     }
   };
+  getBream = async (req, res) => {
+    try {
+      const brems = await brem.find()
+      return res.json(brems)
+    } catch (error) {
+      return next(new ErrorHander(error, 400));
+    }
+  }
+  getOneBream = async (req, res) => {
+    try {
+      const {id} = req.params
+      const bremOne = await brem.findById(id)
+      return res.json(bremOne)
+    } catch (error) {
+      return next(new ErrorHander(error, 400));
+    }
+  }
+  updateBrem = async (req, res) => {
+    try {
+      const {id} = req.params
+      const bremUpdate = await brem.findByIdAndUpdate(id,req.body)
+      return res.json(bremUpdate)
+    } catch (error) {
+      return next(new ErrorHander(error, 400));
+    }
+  }
 }
 module.exports = new BremController();
