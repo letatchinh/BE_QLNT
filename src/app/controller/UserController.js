@@ -3,9 +3,9 @@ const user = require("../models/user");
 class UserController {
   createUser = async (req, res, next) => {
     try {
-      const { idRoom, name, CMND, moreInfo } = req.body;
+      const { name, CMND,countryside } = req.body;
       const createUser = await user.create({
-        idRoom, name, CMND, moreInfo
+        countryside, name, CMND
       });
       return res.json({ createUser });
     } catch (error) {
@@ -33,8 +33,8 @@ class UserController {
   getUsers = async (req, res, next) => {
     try {
       // const {id} = req.params
-      // const userOne = await user.findById(id);
-      // return res.json({ userOne });
+      const users = await user.find();
+      return res.json(users);
     } catch (error) {
       return next(new ErrorHander(e, 400));
     }

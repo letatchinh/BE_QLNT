@@ -5,6 +5,8 @@ const Room = new Schema({
     people : [{
         type:mongoose.Types.ObjectId,ref : 'user',required : true ,
     }],
+    equipment:{type:String,default : ''},
+    roomNumber :Number,
     idBrem :{type :mongoose.Types.ObjectId,ref : 'BremSchema',required : true },
     createdAt : {type : Date,default :Date.now},
     updatedAt : {type : Date,default :Date.now},

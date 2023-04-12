@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const User = new Schema({
-    idRoom :{type :mongoose.Types.ObjectId,ref : 'Room',required : true },
+    idRoom :{type :mongoose.Types.ObjectId,ref : 'Room'},
     name:{type:String,required : true},
     CMND:{type:String,default :''},
     moreInfo:{},
+    countryside:{type:String,default :''},
     createdAt : {type : Date,default :Date.now},
     updatedAt : {type : Date,default :Date.now},
 })

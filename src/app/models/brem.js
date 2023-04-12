@@ -9,7 +9,7 @@ const Brem = new Schema({
     rent : {type : Number , required : true, default : 0},
     wifi : {type : Number , required : true, default : 0},
     trash : {type : Number , required : true, default : 0},
-    // createdAt : {type : Date,default :Date.now},
-    // updatedAt : {type : Date,default :Date.now},
+    createdAt : {type : Date,default :Date.now},
+    updatedAt : {type : Date,default :Date.now},
 })
 module.exports = mongoose.model('BremSchema',Brem)

@@ -12,7 +12,7 @@ class BremController {
         wifi,
         trash,
         name,
-        bremNumber : bremNumber + 1
+        bremNumber : bremNumber || 0 + 1
       });
 
       return res.status(201).json({ createBrem,status:true });
@@ -56,5 +56,15 @@ class BremController {
       throw new Error(error,"error")
     }
   }
+  deleteBrem = async (req, res) => {
+    try {
+      const {id} = req.params
+      await BremCollection.deleteOne({_id:id})
+      res.json("Delelte complete")
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
 }
+  
 module.exports = new BremController();
