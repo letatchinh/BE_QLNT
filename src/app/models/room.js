@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const Room = new Schema({
     people : [{
-        type:mongoose.Types.ObjectId,ref : 'user',required : true ,
+       userId : {type:mongoose.Types.ObjectId,ref : 'user',required : true} ,
     }],
     equipment:{type:String,default : ''},
     roomNumber :Number,
