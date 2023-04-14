@@ -1,4 +1,5 @@
 const moment = require("moment");
+const bill = require("../models/bill");
 const meter = require("../models/meter");
 const room = require("../models/room");
 
@@ -59,7 +60,21 @@ class RoomController{
               }
             }
           ])
-          return res.json(rooms)
+          const listId = rooms.map(e => e._id)
+          const startDate = moment().startOf('M').format('YYYY-MM-DD')
+          const endDate = moment().endOf('M').format('YYYY-MM-DD')
+        const bills = await bill.find({idRoom: {$in : listId},createdAt : {
+        $gte: new Date(startDate),
+        $lt: new Date(endDate)
+      }})
+      console.log(bills,"bills");
+      const newRoom = rooms.map(room => {
+        const findOne = bills.find(billItem => JSON.stringify(billItem.idRoom) === JSON.stringify(room._id))
+        console.log(findOne,"findOne");
+        if(findOne) return {...room,bill:findOne}
+        return room
+      })
+          return res.json(newRoom)
         } catch (error) {
           throw new Error(error,"error")
         }
