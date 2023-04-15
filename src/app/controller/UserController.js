@@ -3,9 +3,9 @@ const user = require("../models/user");
 class UserController {
   createUser = async (req, res, next) => {
     try {
-      const { name, CMND,countryside } = req.body;
+      const { name, CMND,countryside,phone,email } = req.body;
       const createUser = await user.create({
-        countryside, name, CMND
+        countryside, name, CMND,phone,email
       });
       return res.json({ createUser });
     } catch (error) {
@@ -39,5 +39,13 @@ class UserController {
       return next(new ErrorHander(e, 400));
     }
   };
+  deleteAll = async (req,res) => {
+    try {
+      await user.deleteMany({})
+      res.json("Delete all ")
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
 }
 module.exports = new UserController();

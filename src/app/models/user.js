@@ -5,6 +5,8 @@ const User = new Schema({
     idRoom :{type :mongoose.Types.ObjectId,ref : 'Room'},
     name:{type:String,required : true},
     CMND:{type:String,default :''},
+    email:{type:String,default :''},
+    phone:{type:Number,default :0},
     moreInfo:{},
     countryside:{type:String,default :''},
     createdAt : {type : Date,default :Date.now},

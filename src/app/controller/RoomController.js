@@ -87,5 +87,29 @@ class RoomController{
         throw new Error(error,"error")
       }
     }
+    getById = async (req, res) => {
+      try {
+        const {id} = req.params
+        const findOneRoom = await room.findById(id).populate({
+          path : 'people.userId',
+          model : 'UserSchema'
+        }).populate({
+          path : 'idBrem',
+          model :'BremSchema'
+        })
+        return res.json(findOneRoom)
+      } catch (error) {
+        throw new Error(error,"error")
+      }
+    }
+    updateRoom = async (req, res) => {
+      try {
+        const {id} = req.params
+        const RoomUpdate = await room.findByIdAndUpdate(id,req.body)
+        return res.json({status:true,RoomUpdate})
+      } catch (error) {
+        throw new Error(error,"error")
+      }
+    }
 }
 module.exports = new RoomController
