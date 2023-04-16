@@ -8,4 +8,5 @@ router.post('/create', BillController.createBill)
 router.get('/', BillController.getBill)
 router.get('/getOne', BillController.getOneBill)
 router.delete('/deleteAll', BillController.deleteAll)
+router.get('/getStastics', BillController.getStatistics)
 module.exports = router

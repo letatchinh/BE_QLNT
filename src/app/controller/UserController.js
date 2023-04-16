@@ -39,6 +39,24 @@ class UserController {
       return next(new ErrorHander(e, 400));
     }
   };
+  updateUser = async (req, res) => {
+    try {
+      const {id} = req.params
+      const UserUpdate = await user.findByIdAndUpdate(id,req.body)
+      return res.json(UserUpdate)
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
+  deleteUser = async (req, res) => {
+    try {
+      const {id} = req.params
+      await user.deleteOne({_id:id})
+      res.json({status:true})
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
   deleteAll = async (req,res) => {
     try {
       await user.deleteMany({})

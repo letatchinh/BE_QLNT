@@ -41,7 +41,26 @@ class BillController {
       throw new Error(error,"error")
     }
   }
-
+  getStatistics = async (req,res) => {
+    try {
+      const {startDate,endDate} = req.query
+      const billFound = await bill.find({
+        createdAt :{
+          $gte: new Date(startDate),
+          $lt: new Date(endDate)
+        }
+      })
+      const data = billFound.reduce((sum,curr) => {
+        sum.electricityUse +=curr.electricityUse
+        sum.waterUse +=curr.waterUse
+        sum.totalPrice +=curr.totalPrice
+        return sum
+      },{waterUse : 0, electricityUse : 0,totalPrice : 0})
+      res.json(data)
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
 }
 
 module.exports = new BillController();
