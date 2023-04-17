@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
     idRoom :{type :mongoose.Types.ObjectId,ref : 'Room'},
+    gender:{type:String,enum : ['male',female],required : true,default : 'male'},
     name:{type:String,required : true},
     CMND:{type:String,default :''},
     email:{type:String,default :''},
