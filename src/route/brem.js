@@ -8,6 +8,7 @@ router.post('/create', BremController.createBrem)
 router.get('/', BremController.getBream)
 router.get('/lastNumber', BremController.getLastBremNumber)
 router.get('/:id', BremController.getOneBream)
-router.delete('/:id', BremController.deleteBrem)
 router.put('/:id', BremController.updateBrem)
+router.delete('/deleteAll', BremController.deleteAll)
+router.delete('/:id', BremController.deleteBrem)
 module.exports = router

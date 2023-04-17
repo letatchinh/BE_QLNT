@@ -1,27 +1,48 @@
 
 const nodemailer = require("nodemailer");
+const moment = require("moment");
 
 class NodeMailer {
     sendMail = async(req,res) => {
-        const {email} = req.body
+        const {email,html} = req.body
         let transporter = nodemailer.createTransport({
            service : "gmail",
             auth: {
               user: 'reactnative868@gmail.com', // generated ethereal user
-              pass: 'chinhancut1', // generated ethereal password
+              pass: 'bumvzaeyfqgptggg', // generated ethereal password
             },
           });
           await transporter.sendMail({
             from: 'reactnative868@gmail.com', // sender address
             to: email, // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            subject: "Từ chủ trọ", // Subject line
+            text: `Tiền trọ Ngày ${moment().format('DD-MM-YYYY')}`, // plain text body
+            html: html, // html body
           },(err) => {
             if(err) { return res.json({message : "Lỗi",data:err})}
              return res.json({message : "Thành công"})
           });
     }
+    sendMailService = async(data) => {
+      const {email,html} = data
+      let transporter = nodemailer.createTransport({
+         service : "gmail",
+          auth: {
+            user: 'reactnative868@gmail.com', // generated ethereal user
+            pass: 'bumvzaeyfqgptggg', // generated ethereal password
+          },
+        });
+        await transporter.sendMail({
+          from: 'reactnative868@gmail.com', // sender address
+          to: email, // list of receivers
+          subject: "Từ chủ trọ", // Subject line
+          text: `Tiền trọ Ngày ${moment().format('DD-MM-YYYY')}`, // plain text body
+          html: html, // html body
+        },(err) => {
+          if(err) { return {message : "Lỗi",data:err}}
+           return {message : "Thành công"}
+        });
+  }
 
     
   }

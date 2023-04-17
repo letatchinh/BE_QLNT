@@ -1,4 +1,5 @@
 const user = require("../models/user");
+const UserService = require("../service/UserService");
 
 class UserController {
   createUser = async (req, res, next) => {
@@ -51,8 +52,14 @@ class UserController {
   deleteUser = async (req, res) => {
     try {
       const {id} = req.params
-      await user.deleteOne({_id:id})
-      res.json({status:true})
+      const exist = await UserService.findUserIsExistRoom(id)
+      if(exist) {
+        res.json({status:false, data:exist})
+      }
+      else{
+        res.json({status:true})
+        await user.deleteOne({_id:id})
+      }
     } catch (error) {
       throw new Error(error,"error")
     }

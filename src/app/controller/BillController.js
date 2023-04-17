@@ -1,12 +1,22 @@
 const moment = require("moment");
 const bill = require("../models/bill");
+const NodeMailer = require("../service/NodeMailer");
+const RoomService = require("../service/RoomService");
 
 class BillController {
   createBill = async (req, res, next) => {
     try {
       const { electricityNumber, waterNumber,waterUse, rent, wifi, trash,idRoom,electricityUse,totalPrice} = req.body;
       const createBill = await bill.create({ electricityNumber, waterNumber,waterUse, rent, wifi, trash,idRoom,electricityUse,totalPrice});
-      return res.json({ createBill,status:true });
+      if(createBill){
+        const findRoom = await RoomService.getById(idRoom)
+        // const email = findRoom.people[0].userId.email
+        // const statusSendEmail = await NodeMailer.sendMail({email,html})
+        return res.json({ createBill,status:true });
+      }
+      else{
+        return res.json({status:false });
+      }
     } catch (error) {
       return next(new ErrorHander(e, 400));
     }
@@ -43,13 +53,40 @@ class BillController {
   }
   getStatistics = async (req,res) => {
     try {
-      const {startDate,endDate} = req.query
-      const billFound = await bill.find({
-        createdAt :{
-          $gte: new Date(startDate),
-          $lt: new Date(endDate)
-        }
-      })
+      const {startDate,endDate,idRoom} = req.query
+    const querys = {
+      createdAt :{
+        $gte: new Date(startDate),
+        $lt: new Date(endDate)
+      },
+    }
+    const querysIdRoom = {
+      createdAt :{
+        $gte: new Date(startDate),
+        $lt: new Date(endDate)
+      },
+      idRoom
+    }
+      const billFound = await bill.find(idRoom ? querysIdRoom  : querys)
+    //   const billFound = await bill.aggregate([
+    //     {
+    //     $match:{
+    //       createdAt :{
+    //         $gte: new Date(startDate),
+    //         $lt: new Date(endDate)
+    //       },
+    //     }
+    //   },
+    //   {
+    //     idRoom:{
+    //       $cond:{
+    //         if:{idRoom:{$exists:true}},
+    //         then:Types.ObjectId(idRoom),
+    //         else:{}
+    //       }
+    //     }
+    //   }
+    // ])
       const data = billFound.reduce((sum,curr) => {
         sum.electricityUse +=curr.electricityUse
         sum.waterUse +=curr.waterUse

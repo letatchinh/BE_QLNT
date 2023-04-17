@@ -1,4 +1,5 @@
 const BremCollection = require("../models/brem");
+const BremService = require("../service/BremService");
 const { getLastBremNumber } = require("../service/BremService");
 
 class BremController {
@@ -12,7 +13,7 @@ class BremController {
         wifi,
         trash,
         name,
-        bremNumber : bremNumber || 0 + 1
+        bremNumber : bremNumber || 0
       });
 
       return res.status(201).json({ createBrem,status:true });
@@ -50,7 +51,6 @@ class BremController {
   getLastBremNumber = async (req, res) => {
     try {
       const lastBrem = await getLastBremNumber()
-      console.log(lastBrem,"lastBrem");
        res.json({lastBrem})
     } catch (error) {
       throw new Error(error,"error")
@@ -59,8 +59,22 @@ class BremController {
   deleteBrem = async (req, res) => {
     try {
       const {id} = req.params
-      await BremCollection.deleteOne({_id:id})
-      res.json("Delelte complete")
+      const exist = await BremService.findBremIsExistRoom(id)
+      if(exist.length > 0) {
+        res.json({status:false, data:exist})
+      }
+      else{
+        res.json({status:true})
+        await BremCollection.deleteOne({_id:id})
+      }
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
+  deleteAll = async (req,res) => {
+    try {
+      await BremCollection.deleteMany({})
+      res.json("Delete all ")
     } catch (error) {
       throw new Error(error,"error")
     }
