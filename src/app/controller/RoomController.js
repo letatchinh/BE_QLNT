@@ -67,7 +67,6 @@ class RoomController{
         $gte: new Date(startDate),
         $lt: new Date(endDate)
       }})
-      console.log(bills,"bills");
       const newRoom = rooms.map(room => {
         const findOne = bills.find(billItem => JSON.stringify(billItem.idRoom) === JSON.stringify(room._id))
         console.log(findOne,"findOne");
