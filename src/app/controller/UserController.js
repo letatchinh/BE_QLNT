@@ -4,9 +4,9 @@ const UserService = require("../service/UserService");
 class UserController {
   createUser = async (req, res, next) => {
     try {
-      const { name, CMND,countryside,phone,email } = req.body;
+      // const { name, CMND,countryside,phone,email } = req.body;
       const createUser = await user.create({
-        countryside, name, CMND,phone,email
+        ...req.body
       });
       return res.json({ createUser });
     } catch (error) {
@@ -34,7 +34,8 @@ class UserController {
   getUsers = async (req, res, next) => {
     try {
       // const {id} = req.params
-      const users = await user.find();
+      const users = await user.find().populate({ path : 'hobbys',
+      model : 'HobbySchema'});
       return res.json(users);
     } catch (error) {
       return next(new ErrorHander(e, 400));
