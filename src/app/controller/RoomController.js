@@ -2,22 +2,30 @@ const moment = require("moment");
 const bill = require("../models/bill");
 const meter = require("../models/meter");
 const room = require("../models/room");
+const GroupRoomService = require("../service/GroupRoomService");
+const RoomService = require("../service/RoomService");
 
 class RoomController{
     createRoom = async(req,res,next) => {
         try {
-          const { electricity, water, date , roomNumber} = req.body;
+          const { electricity, water, date , roomNumber,idGroupRoom} = req.body;
           const month = parseInt(moment(date).format("MM"));
           const year = parseInt(moment(date).format("YYYY"));
           const findexist = await room.findOne({roomNumber})
+          const isFullRoom = await GroupRoomService.checkHaveRoom(idGroupRoom)
           if(findexist){
             return res.json({status:false, message : 'Số phòng này đã tồn tại'})
+          }else if(isFullRoom){
+            return res.json({status:false, message : 'Khu nhà này đã đầy phòng'})
           }
+          else{
             const data = await room.create(req.body)
             if(data){
               const meters = await meter.create({ electricity, water, idRoom : data._id , date,month,year})
             }
            return res.json({status:true,data})
+          }
+         
         } catch (error) {
             throw new Error(error)
         }
@@ -106,6 +114,15 @@ class RoomController{
         const {id} = req.params
         const RoomUpdate = await room.findByIdAndUpdate(id,req.body)
         return res.json({status:true,RoomUpdate})
+      } catch (error) {
+        throw new Error(error,"error")
+      }
+    }
+    getListUser = async (req, res) => {
+      try {
+       
+        const listUser = await RoomService.findStudentForRoom()
+        return res.json({status:true,listUser})
       } catch (error) {
         throw new Error(error,"error")
       }
