@@ -43,6 +43,9 @@ class NodeMailer {
            return {message : "Thành công"}
         });
   }
+  sendMailChimp = async (req,res) => {
+    
+  }
 
     
   }
