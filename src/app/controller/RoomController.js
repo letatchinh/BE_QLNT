@@ -127,5 +127,14 @@ class RoomController{
         throw new Error(error,"error")
       }
     }
+    findRoomForUser = async (req, res) => {
+      try {
+       const {gender} = req.body
+        const listUser = await RoomService.findRoomForStudent({gender})
+        return res.json({status:true,listUser})
+      } catch (error) {
+        throw new Error(error,"error")
+      }
+    }
 }
 module.exports = new RoomController

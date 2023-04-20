@@ -8,6 +8,7 @@ router.post('/create', roomController.createRoom)
 router.get('/', roomController.getRoom)
 router.delete('/deleteAll', roomController.deleteAll)
 router.get('/getListStudent', roomController.getListUser)
+router.post('/findRoomForStudent', roomController.findRoomForUser)
 router.get('/:id', roomController.getById)
 router.put('/:id', roomController.updateRoom)
 module.exports = router

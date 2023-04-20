@@ -31,7 +31,26 @@ class RoomService {
         throw new Error("Eoor")
        }
     }
-    
+    findRoomForStudent = async({gender}) => {
+      try {
+       const allRoom = await room.find({people : {$elemMatch : {userId : {$exists : true}}}}).populate({path : 'people.userId',model : 'UserSchema'})
+      //  let studentsNotGender = allRoom.filter(e => )
+      let listNotGender = []
+      let listGender = []
+      allRoom.map(room => {
+       const isRaw = room.people.some(user => user.userId.gender === gender)
+        if(isRaw){
+          listGender.push(room)
+        }
+        else{
+          listNotGender.push(room)
+        }
+      })
+       return {listNotGender,listGender}
+      } catch (error) {
+       throw new Error("Eoor")
+      }
+   }
     
   }
   module.exports = new RoomService();
