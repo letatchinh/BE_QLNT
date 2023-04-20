@@ -129,9 +129,9 @@ class RoomController{
     }
     findRoomForUser = async (req, res) => {
       try {
-       const {gender} = req.body
-        const listUser = await RoomService.findRoomForStudent({gender})
-        return res.json({status:true,listUser})
+       const {gender,branch,hobbys,countryside} = req.body
+        const listUser = await RoomService.findRoomForStudent({gender,branch,hobbys,countryside})
+        return res.json({status:true,data:listUser})
       } catch (error) {
         throw new Error(error,"error")
       }
