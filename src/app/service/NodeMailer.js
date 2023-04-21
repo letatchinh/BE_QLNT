@@ -25,6 +25,7 @@ class NodeMailer {
     }
     sendMailService = async(data) => {
       const {email,html} = data
+      console.log(data,"data");
       let transporter = nodemailer.createTransport({
          service : "gmail",
           auth: {
@@ -39,8 +40,9 @@ class NodeMailer {
           text: `Tiền trọ Ngày ${moment().format('DD-MM-YYYY')}`, // plain text body
           html: html, // html body
         },(err) => {
-          if(err) { return {message : "Lỗi",data:err}}
-           return {message : "Thành công"}
+          if(err) {console.log(err,'loi'); return {message : "Lỗi",data:err}}
+          console.log("ok");
+          return {message : "Thành công"}
         });
   }
 
