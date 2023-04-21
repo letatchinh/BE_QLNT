@@ -6,6 +6,7 @@ const roomController = require('../app/controller/RoomController')
 
 router.post('/create', roomController.createRoom)
 router.get('/', roomController.getRoom)
+router.get('/getRoomById/:idAccount', roomController.getRoomById)
 router.delete('/deleteAll', roomController.deleteAll)
 router.get('/getListStudent', roomController.getListUser)
 router.post('/findRoomForStudent', roomController.findRoomForUser)

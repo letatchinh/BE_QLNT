@@ -1,5 +1,7 @@
 const moment = require("moment");
 const bill = require("../models/bill");
+const groupRoom = require("../models/groupRoom");
+const room = require("../models/room");
 const NodeMailer = require("../service/NodeMailer");
 const RoomService = require("../service/RoomService");
 
@@ -53,8 +55,9 @@ class BillController {
   }
   getStatistics = async (req,res) => {
     try {
-      const {startDate,endDate,idRoom} = req.query
-    const querys = {
+      const {startDate,endDate,idRoom,role,idAccount} = req.query
+      const groupRooms =await groupRoom.findOne({idAccount})
+      const querys = {
       createdAt :{
         $gte: new Date(startDate),
         $lt: new Date(endDate)
@@ -67,33 +70,30 @@ class BillController {
       },
       idRoom
     }
-      const billFound = await bill.find(idRoom ? querysIdRoom  : querys)
-    //   const billFound = await bill.aggregate([
-    //     {
-    //     $match:{
-    //       createdAt :{
-    //         $gte: new Date(startDate),
-    //         $lt: new Date(endDate)
-    //       },
-    //     }
-    //   },
-    //   {
-    //     idRoom:{
-    //       $cond:{
-    //         if:{idRoom:{$exists:true}},
-    //         then:Types.ObjectId(idRoom),
-    //         else:{}
-    //       }
-    //     }
-    //   }
-    // ])
-      const data = billFound.reduce((sum,curr) => {
+
+      let billFound = await bill.find(idRoom ? querysIdRoom  : querys).populate({path : 'idRoom',model : 'RoomSchema'})
+      console.log(billFound,"billFound");
+      if(role !== 'superAdmin'){
+        billFound = billFound.filter(e => JSON.stringify(e.idRoom.idGroupRoom) === JSON.stringify((groupRooms?._id || '')))
+      }
+      let rooms
+      if(groupRooms){
+
+        rooms =await room.find({idGroupRoom : groupRooms._id})
+      }
+     
+      let data = billFound.reduce((sum,curr) => {
         sum.electricityUse +=curr.electricityUse
         sum.waterUse +=curr.waterUse
         sum.totalPrice +=curr.totalPrice
         return sum
       },{waterUse : 0, electricityUse : 0,totalPrice : 0})
-      res.json(data)
+      let totalUser = 0
+      if(rooms.length > 0){
+         totalUser = rooms?.reduce((sum,curr) =>  sum += curr.people.length
+         ,0)
+      }
+      res.json({...data,totalRooms : rooms.length,totalUser})
     } catch (error) {
       throw new Error(error,"error")
     }

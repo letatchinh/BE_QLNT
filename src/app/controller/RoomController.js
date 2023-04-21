@@ -1,5 +1,6 @@
 const moment = require("moment");
 const bill = require("../models/bill");
+const groupRoom = require("../models/groupRoom");
 const meter = require("../models/meter");
 const room = require("../models/room");
 const GroupRoomService = require("../service/GroupRoomService");
@@ -35,42 +36,43 @@ class RoomController{
     }
     getRoom = async (req, res) => {
         try {
-          const rooms = await room.aggregate([
-            {
-              $unwind:'$people'
-            },
-            {
-                  $lookup:{
-                    from:'userschemas',
-                    localField:'people.userId',
-                    foreignField:'_id',
-                    as:'users'
-                  }
-            },
-            {
-              $unwind:'$users'
-            },
-            {
-              $lookup:{
-                from:'bremschemas',
-                localField:'idBrem',
-                foreignField:'_id',
-                as:'brems'
-              }
-            },
-            {
-              $unwind:'$brems'
-            },
-            {
-              $group:{
-                _id:'$_id',
-                users:{$push:'$users'},
-                brems:{$first:'$brems'},
-                equipment:{$first:'$equipment'},
-                roomNumber:{$first:'$roomNumber'}
-              }
-            }
-          ])
+          // const rooms = await room.aggregate([
+          //   {
+          //     $unwind:'$people'
+          //   },
+          //   {
+          //         $lookup:{
+          //           from:'userschemas',
+          //           localField:'people.userId',
+          //           foreignField:'_id',
+          //           as:'users'
+          //         }
+          //   },
+          //   {
+          //     $unwind:'$users'
+          //   },
+          //   {
+          //     $lookup:{
+          //       from:'bremschemas',
+          //       localField:'idBrem',
+          //       foreignField:'_id',
+          //       as:'brems'
+          //     }
+          //   },
+          //   {
+          //     $unwind:'$brems'
+          //   },
+          //   {
+          //     $group:{
+          //       _id:'$_id',
+          //       users:{$push:'$users'},
+          //       brems:{$first:'$brems'},
+          //       equipment:{$first:'$equipment'},
+          //       roomNumber:{$first:'$roomNumber'}
+          //     }
+          //   }
+          // ])
+          const rooms = await room.find().populate({path : 'people.userId',model : 'UserSchema'}).populate({path : 'idBrem',model : 'BremSchema'})
           const listId = rooms.map(e => e._id)
           const startDate = moment().startOf('M').format('YYYY-MM-DD')
           const endDate = moment().endOf('M').format('YYYY-MM-DD')
@@ -80,8 +82,32 @@ class RoomController{
       }})
       const newRoom = rooms.map(room => {
         const findOne = bills.find(billItem => JSON.stringify(billItem.idRoom) === JSON.stringify(room._id))
-        if(findOne) return {...room,bill:findOne}
-        return room
+        if(findOne) return {...room._doc,bill:findOne}
+        return room._doc
+      })
+          return res.json(newRoom)
+        } catch (error) {
+          throw new Error(error,"error")
+        }
+      }
+      getRoomById = async (req, res) => {
+        try {
+          const {idAccount} = req.params
+          const {role} = req.query
+          const groupRooms =await groupRoom.findOne({idAccount})
+          const condition = role === 'superAdmin' ? {} : {idGroupRoom : groupRooms._id}
+          const rooms = await room.find(condition).populate({path : 'people.userId',model : 'UserSchema'}).populate({path : 'idBrem',model : 'BremSchema'})
+          const listId = rooms.map(e => e._id)
+          const startDate = moment().startOf('M').format('YYYY-MM-DD')
+          const endDate = moment().endOf('M').format('YYYY-MM-DD')
+        const bills = await bill.find({idRoom: {$in : listId},createdAt : {
+        $gte: new Date(startDate),
+        $lt: new Date(endDate)
+      }})
+      const newRoom = rooms.map(room => {
+        const findOne = bills.find(billItem => JSON.stringify(billItem.idRoom) === JSON.stringify(room._id))
+        if(findOne) return {...room._doc,bill:findOne}
+        return room._doc
       })
           return res.json(newRoom)
         } catch (error) {
@@ -114,6 +140,10 @@ class RoomController{
     updateRoom = async (req, res) => {
       try {
         const {id} = req.params
+        const {maxUser,people} = req.body;
+        if(people.length > maxUser){
+          return res.json({status:false, message : 'Số người vượt quá cho phép'})
+        }
         const RoomUpdate = await room.findByIdAndUpdate(id,req.body)
         return res.json({status:true,RoomUpdate})
       } catch (error) {
