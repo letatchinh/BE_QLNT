@@ -87,8 +87,9 @@ class RoomService {
 for (const [key, value] of Object.entries(result)) {
     dataResult.push({count : key,value})
   }
+
   dataResult.sort((a,b) => parseInt(b.count) - parseInt(a.count))
-       return {listNotGender,listGender,result:dataResult}
+       return {listNotGender : [{count : 0,value : listNotGender}],listGender,result:dataResult}
       } catch (error) {
        throw new Error("Eoor")
       }
