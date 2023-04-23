@@ -4,10 +4,14 @@ class HobbyController {
   createHobby = async (req, res, next) => {
     try {
       const { name} = req.body;
+      const isExist = await hobby.findOne({name})
+      if(isExist){
+        return res.json({message : "Đã tồn tại sở thích này",status : false})
+      }
       const createHobby = await hobby.create({
         name
       });
-      return res.json({ createHobby });
+      return res.json({ createHobby,status:true });
     } catch (error) {
       return next(new ErrorHander(e, 400));
     }
@@ -33,8 +37,13 @@ class HobbyController {
   updateHobby = async (req, res) => {
     try {
       const {id} = req.params
+      const {name} = req.body
+      const isExist = await hobby.findOne({name,_id : {$ne : id}})
+      if(isExist){
+        return res.json({message : "Đã tồn tại sở thích này",status : false})
+      }
       const HobbyUpdate = await hobby.findByIdAndUpdate(id,req.body)
-      return res.json(HobbyUpdate)
+      return res.json({HobbyUpdate,status : true})
     } catch (error) {
       throw new Error(error,"error")
     }
