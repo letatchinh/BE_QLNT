@@ -1,4 +1,5 @@
 const BremCollection = require("../models/brem");
+const room = require("../models/room");
 const BremService = require("../service/BremService");
 const { getLastBremNumber } = require("../service/BremService");
 
@@ -25,7 +26,15 @@ class BremController {
   getBream = async (req, res) => {
     try {
       const brems = await BremCollection.find()
-      return res.json(brems)
+      const listId = brems.map(e => e._id)
+      console.log(listId,"listId");
+      const rooms = await room.find({idBrem : { $in : listId}})
+      console.log(rooms,'rooms');
+      const newBrem = brems.map(e => {
+        const room = rooms.filter(r => JSON.stringify(r.idBrem) === JSON.stringify(e._id))
+        return {...e._doc,rooms : room}
+      })
+      return res.json(newBrem)
     } catch (error) {
       throw new Error(error,"error")
     }
