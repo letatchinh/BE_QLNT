@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Account = new Schema({
-    role :  {type : String,enum : ['superAdmin','staff'],default :'staff'},
+    role :  {type : String,enum : ['superAdmin','staff','student'],default :'staff'},
     username : {type : String,require : true,default :''},
     password : {type : String,require : true,default :''},
     name : {type : String,require : true,default :''},

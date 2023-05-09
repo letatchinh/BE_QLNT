@@ -1,4 +1,5 @@
 const moment = require("moment");
+const { ROLE } = require("../../resource/defaultValue");
 const bill = require("../models/bill");
 const groupRoom = require("../models/groupRoom");
 const meter = require("../models/meter");
@@ -94,6 +95,7 @@ class RoomController{
         try {
           const {idAccount} = req.params
           const {role} = req.query
+          if(role === ROLE.student) return 
           const groupRooms =await groupRoom.findOne({idAccount})
           const condition = role === 'superAdmin' ? {} : {idGroupRoom : groupRooms._id}
           const rooms = await room.find(condition).populate({path : 'people.userId',model : 'UserSchema'}).populate({path : 'idBrem',model : 'BremSchema'})

@@ -13,6 +13,8 @@ const User = new Schema({
     phone:{type:Number,default :0},
     moreInfo:{},
     countryside:{type:String,default :''},
+    username : {type : String,require : true,default :''},
+    password : {type : String,require : true,default :''},
     createdAt : {type : Date,default :Date.now},
     updatedAt : {type : Date,default :Date.now},
 })
