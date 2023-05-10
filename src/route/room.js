@@ -12,5 +12,6 @@ router.get('/getListStudent', roomController.getListUser)
 router.post('/findRoomForStudent', roomController.findRoomForUser)
 router.get('/:id', roomController.getById)
 router.put('/addOneUserToRoom/:id', roomController.addOneUserToRoom)
+router.get('/getRoomForUser/:username', roomController.getRoomForUser)
 router.put('/:id', roomController.updateRoom)
 module.exports = router

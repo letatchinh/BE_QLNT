@@ -4,8 +4,10 @@ const bill = require("../models/bill");
 const groupRoom = require("../models/groupRoom");
 const meter = require("../models/meter");
 const room = require("../models/room");
+const AccountService = require("../service/AccountService");
 const GroupRoomService = require("../service/GroupRoomService");
 const RoomService = require("../service/RoomService");
+const UserService = require("../service/UserService");
 
 class RoomController{
     createRoom = async(req,res,next) => {
@@ -99,6 +101,29 @@ class RoomController{
           const groupRooms =await groupRoom.findOne({idAccount})
           const condition = role === 'superAdmin' ? {} : {idGroupRoom : groupRooms._id}
           const rooms = await room.find(condition).populate({path : 'people.userId',model : 'UserSchema'}).populate({path : 'idBrem',model : 'BremSchema'})
+          const listId = rooms.map(e => e._id)
+          const startDate = moment().startOf('M').format('YYYY-MM-DD')
+          const endDate = moment().endOf('M').format('YYYY-MM-DD')
+        const bills = await bill.find({idRoom: {$in : listId},createdAt : {
+        $gte: new Date(startDate),
+        $lt: new Date(endDate)
+      }})
+      const newRoom = rooms.map(room => {
+        const findOne = bills.find(billItem => JSON.stringify(billItem.idRoom) === JSON.stringify(room._id))
+        if(findOne) return {...room._doc,bill:findOne}
+        return room._doc
+      })
+          return res.json(newRoom)
+        } catch (error) {
+          throw new Error(error,"error")
+        }
+      }
+      getRoomForUser = async (req, res) => {
+        try {
+          const {username} = req.params
+          const findOne = await UserService.findByUsername(username)
+          if(!findOne) return 
+          const rooms = await room.find({idGroupRoom : findOne.idGroupRoom}).populate({path : 'people.userId',model : 'UserSchema'}).populate({path : 'idBrem',model : 'BremSchema'})
           const listId = rooms.map(e => e._id)
           const startDate = moment().startOf('M').format('YYYY-MM-DD')
           const endDate = moment().endOf('M').format('YYYY-MM-DD')

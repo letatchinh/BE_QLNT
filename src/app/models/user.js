@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
     idRoom :{type :mongoose.Types.ObjectId,ref : 'Room'},
+    idGroupRoom :{type :mongoose.Types.ObjectId,ref : 'GroupRoom'},
     gender:{type:String,enum : ['male','female'],required : true,default : 'male'},
     MaSv:{type:String,required : true,default : ''},
     branch:{type:String,required : true,default : ''},
