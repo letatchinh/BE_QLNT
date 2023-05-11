@@ -14,7 +14,7 @@ class UserController {
         ...req.body
       });
       await account.create({
-        username,password,role:ROLE.student,name
+        username,password,role:ROLE.student,name,idUser : createUser?._id || ''
        });
       return res.json({ status:true,createUser });
     } catch (error) {

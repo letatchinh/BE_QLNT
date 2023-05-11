@@ -6,6 +6,7 @@ const Account = new Schema({
     username : {type : String,require : true,default :''},
     password : {type : String,require : true,default :''},
     name : {type : String,require : true,default :''},
+    idUser : {type : String,default :''},
     createdAt : {type : Date,default :Date.now},
     updatedAt : {type : Date,default :Date.now},
 })

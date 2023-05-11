@@ -7,6 +7,7 @@ const nodeMailerRoute = require('./nodeMailer')
 const hobby = require('./hobby')
 const account = require('./account')
 const groupRoom = require('./groupRoom')
+const requestJoinRoom = require('./requestJoinRoom')
 function route(app){
  app.use('/room',roomRoute)
  app.use('/brem',bremRoute)
@@ -17,5 +18,6 @@ function route(app){
  app.use('/hobby',hobby)
  app.use('/account',account)
  app.use('/groupRoom',groupRoom)
+ app.use('/requestJoinRoom',requestJoinRoom)
 }
 module.exports = route

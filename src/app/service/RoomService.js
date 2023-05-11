@@ -94,6 +94,11 @@ for (const [key, value] of Object.entries(result)) {
        throw new Error("Eoor")
       }
    }
+   checkIsStudentHaveRoom = async(idUser) => {
+    const res = await room.findOne({people : {$elemMatch : {'userId' : idUser}}})
+    console.log(res)
+    return res
+   }  
     
   }
   module.exports = new RoomService();
