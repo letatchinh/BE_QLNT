@@ -44,7 +44,7 @@ class AccountController {
   getAccounts = async (req, res, next) => {
     try {
       // const {id} = req.params
-      const accounts = await account.find();
+      const accounts = await account.find({role : {$ne : 'student'}});
       return res.json(accounts);
     } catch (error) {
       throw new Error(error,"error")
