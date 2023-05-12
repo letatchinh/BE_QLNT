@@ -1,5 +1,6 @@
 const groupRoom = require("../models/groupRoom");
 const GroupRoomService = require("../service/GroupRoomService");
+const RoomService = require("../service/RoomService");
 
 class GroupRoomController {
   createGroupRoom = async (req, res, next) => {
@@ -60,6 +61,16 @@ class GroupRoomController {
     try {
       await groupRoom.deleteMany({})
       res.json("Delete all ")
+    } catch (error) {
+      throw new Error(error,"error")
+    }
+  }
+  getAllUserInGroupRoom = async (req,res) => {
+    try {
+      const {id} = req.params
+      const listRoom = await RoomService.getUsersByIdGroupRoom(id)
+      console.log(listRoom,"listRoom");
+      res.json({listRoom})
     } catch (error) {
       throw new Error(error,"error")
     }

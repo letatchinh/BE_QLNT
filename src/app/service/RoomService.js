@@ -96,9 +96,15 @@ for (const [key, value] of Object.entries(result)) {
    }
    checkIsStudentHaveRoom = async(idUser) => {
     const res = await room.findOne({people : {$elemMatch : {'userId' : idUser}}})
-    console.log(res)
     return res
    }  
+   getUsersByIdGroupRoom = async(idGroupRoom) => {
+    const res = await room.find({idGroupRoom}).populate({
+      path : 'people.userId',
+      model : 'UserSchema'
+    })
+    return res
+   }
     
   }
   module.exports = new RoomService();

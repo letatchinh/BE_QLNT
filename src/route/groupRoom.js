@@ -8,4 +8,5 @@ router.post('/create', groupRoomController.createGroupRoom)
 router.get('/', groupRoomController.getGroupRooms)
 router.delete('/deleteAll', groupRoomController.deleteAll)
 router.put('/:id', groupRoomController.updateGroupRoom)
+router.get('/getUserByGroupRoom/:id', groupRoomController.getAllUserInGroupRoom)
 module.exports = router
