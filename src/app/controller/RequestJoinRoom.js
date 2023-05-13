@@ -26,18 +26,23 @@ class RequestJoinRoomController {
   getRequestJoinRooms = async (req, res, next) => {
     try {
       const {id,role} = req.query
-      const groupRooms = await groupRoom.find({idAccount : id})
-      console.log(groupRooms,"groupRooms");
       const requestJoinRooms = await requestJoinRoom.find().sort({createdAt : -1}).populate('idUser').populate('idRoom');
-      if(role === 'superAdmin'){
-        return res.json(requestJoinRooms);
+      console.log(id,"id");
+      console.log(role,"role");
+      if(id && role) {
+        if(role === 'superAdmin'){
+          return res.json(requestJoinRooms);
+        }
+        const groupRooms = await groupRoom.find({idAccount : id})
+        const requestOfStaff = requestJoinRooms?.filter(e => {
+          const findOne = groupRooms.some(g => JSON.stringify(g._id) === JSON.stringify(e?.idUser?.idGroupRoom))
+          return findOne
+          })
+        return  res.json(requestOfStaff);
+  
       }
-      const requestOfStaff = requestJoinRooms?.filter(e => {
-        const findOne = groupRooms.some(g => JSON.stringify(g._id) === JSON.stringify(e?.idUser?.idGroupRoom))
-        return findOne
-        })
-      return  res.json(requestOfStaff);
-
+      return res.json(requestJoinRooms); 
+    
      
     } catch (error) {
       throw new Error(error,"error")
