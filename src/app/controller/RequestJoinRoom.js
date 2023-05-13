@@ -1,3 +1,4 @@
+const groupRoom = require("../models/groupRoom");
 const requestJoinRoom = require("../models/requestJoinRoom");
 const room = require("../models/room");
 const RoomService = require("../service/RoomService");
@@ -24,8 +25,20 @@ class RequestJoinRoomController {
   };
   getRequestJoinRooms = async (req, res, next) => {
     try {
+      const {id,role} = req.query
+      const groupRooms = await groupRoom.find({idAccount : id})
+      console.log(groupRooms,"groupRooms");
       const requestJoinRooms = await requestJoinRoom.find().sort({createdAt : -1}).populate('idUser').populate('idRoom');
-      return res.json(requestJoinRooms);
+      if(role === 'superAdmin'){
+        return res.json(requestJoinRooms);
+      }
+      const requestOfStaff = requestJoinRooms?.filter(e => {
+        const findOne = groupRooms.some(g => JSON.stringify(g._id) === JSON.stringify(e?.idUser?.idGroupRoom))
+        return findOne
+        })
+      return  res.json(requestOfStaff);
+
+     
     } catch (error) {
       throw new Error(error,"error")
     }

@@ -81,7 +81,6 @@ class BillController {
         let queryFindRoom = role === 'superAdmin' ? {} : {idGroupRoom : groupRooms._id}
         rooms =await room.find({...queryFindRoom})
       }
-     console.log(rooms,"rooms");
       let data = billFound.reduce((sum,curr) => {
         sum.electricityUse +=curr.electricityUse
         sum.waterUse +=curr.waterUse
