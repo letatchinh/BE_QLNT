@@ -2,6 +2,7 @@ const moment = require("moment");
 const bill = require("../models/bill");
 const groupRoom = require("../models/groupRoom");
 const room = require("../models/room");
+const user = require("../models/user");
 const NodeMailer = require("../service/NodeMailer");
 const RoomService = require("../service/RoomService");
 
@@ -87,14 +88,16 @@ class BillController {
         sum.totalPrice +=curr.totalPrice
         return sum
       },{waterUse : 0, electricityUse : 0,totalPrice : 0})
+      const totalUserOfAdmin = await user.count({})
       let totalUser = 0
+
       if(rooms){
-         totalUser = rooms?.reduce((sum,curr) =>  sum += curr?.people?.length || 0
+         totalUser = rooms?.reduce((sum,curr) =>  sum += curr?.people?.length
          ,0)
-         res.json({...data,totalRooms : rooms?.length || 0,totalUser,groupRooms : groupRooms ?? null})
+         res.json({...data,totalRooms : rooms?.length || 0,totalUser  :role === 'superAdmin' ? totalUserOfAdmin : totalUser,groupRooms : groupRooms ?? null})
       }
       else{
-        res.json({...data,totalRooms : 0,totalUser,groupRooms: groupRooms ?? null})
+        res.json({...data,totalRooms : 0,totalUser :role === 'superAdmin' ? totalUserOfAdmin : totalUser,groupRooms: groupRooms ?? null})
       }
       
     } catch (error) {
